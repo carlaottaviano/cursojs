@@ -96,19 +96,19 @@ function ShoppingCart() {
     this.add = function (id) {
         manageLocalStorage(id, true);
         manageDOM(id, true);
-        this.totalQuantity();
-        document.getElementById('total').innerHTML = `$ ${this.total()}`;
+        totalQuantity();
+        document.getElementById('total').innerHTML = `$ ${total()}`;
     }
 
-    this.delete = function (id){
+    function deletePROD(id) {
         manageLocalStorage(id, false);
         manageDOM(id, false);
-        this.totalQuantity();
-        document.getElementById('total').innerHTML = `$ ${this.total()}`;
+        totalQuantity();
+        document.getElementById('total').innerHTML = `$ ${total()}`;
     }
 
-    function manageLocalStorage (id, isAdd) {
-        if(isAdd) {
+    function manageLocalStorage(id, isAdd) {
+        if (isAdd) {
             if (localStorage.getItem(id) !== null) {
                 localStorage.setItem(id, parseInt(localStorage.getItem(id)) + 1);
             } else {
@@ -123,8 +123,8 @@ function ShoppingCart() {
         }
     }
 
-    function manageDOM (id, isAdd) {
-        if(isAdd) {
+    function manageDOM(id, isAdd) {
+        if (isAdd) {
             if (parseInt(localStorage.getItem(id)) > 1) {
                 document.getElementById(`product-quantity-${id}`).innerHTML = ` x ${localStorage.getItem(id)}`;
             } else {
@@ -135,6 +135,8 @@ function ShoppingCart() {
                 document.getElementById(`product-quantity-${id}`).innerHTML = ` x ${localStorage.getItem(id)}`;
             } else {
                 document.getElementById(`product-cart-${id}`).remove();
+                var prodIndex = listShoppingCart.findIndex(elem => elem.id == id);
+                listShoppingCart.splice(prodIndex, 1);
             }
         }
     }
@@ -144,7 +146,7 @@ function ShoppingCart() {
         return listShoppingCart;
     }
 
-    this.totalQuantity = function () {
+    function totalQuantity() {
         var totalQuantity = 0;
         listShoppingCart.forEach(function (element) {
             totalQuantity = totalQuantity + parseInt(localStorage.getItem(element.id));
@@ -153,7 +155,7 @@ function ShoppingCart() {
     }
 
     // calcula el precio total de los productos del carrito
-    this.total = function () {
+    function total() {
         var total = 0;
         listShoppingCart.forEach(function (element) {
             total = element.price * parseInt(localStorage.getItem(element.id)) + total;
@@ -168,10 +170,11 @@ function ShoppingCart() {
         setLiInnerHtml(li, productoSeleccionado, id);
         li.id = `product-cart-${id}`;
         document.getElementById('cart-list').appendChild(li);
-        // document.getElementById(`trash-${id}`).addEventListener("click", myShoppingCart.delete(id));
-        document.getElementById(`trash-${id}`).addEventListener("click", function(){
-            myShoppingCart.delete(id)
-        });
+        //document.getElementById(`trash-${id}`).addEventListener("click", alala());
+        document.getElementById(`trash-${id}`).addEventListener("click", function () {
+            deletePROD(id)
+        }
+        );
     }
 
     function setLiInnerHtml(li, productoSeleccionado, id) {
@@ -229,4 +232,5 @@ window.onload = function () {
     }
     // traigo resultados para tener productos al ingresar
     searchProducts("cuaderno", myShoppingCart);
+
 }
